@@ -1,23 +1,30 @@
 import logo from './logo.svg';
 import './App.css';
+import CameraFeed from "./components/CameraFeed";
+import MusicPlayer from "./components/MusicPlayer";
+import MoodChart from "./components/MoodChart";
+import SuggestionCard from "./components/SuggestionCard";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="min-h-screen bg-[#0f0f14] text-white flex">
+      
+      {/* LEFT */}
+      <div className="w-1/4 p-4 border-r border-gray-800">
+        <CameraFeed />
+      </div>
+
+      {/* CENTER */}
+      <div className="w-2/4 p-6 flex items-center justify-center">
+        <MusicPlayer />
+      </div>
+
+      {/* RIGHT */}
+      <div className="w-1/4 p-4 border-l border-gray-800 space-y-4">
+        <MoodChart />
+        <SuggestionCard />
+      </div>
+
     </div>
   );
 }
