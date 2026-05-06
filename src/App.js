@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import CameraFeed from "./components/CameraFeed";
 import MusicPlayer from "./components/MusicPlayer";
@@ -16,7 +15,8 @@ function App() {
 
       {/* CENTER */}
       <div className="w-2/4 p-6 flex items-center justify-center">
-        <MusicPlayer />
+        {/* 👇 IMPORTANT CHANGE */}
+        <MusicPlayer emotion="happy" />
       </div>
 
       {/* RIGHT */}
