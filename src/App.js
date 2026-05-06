@@ -1,4 +1,5 @@
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
 import CameraFeed from "./components/CameraFeed";
 import MusicPlayer from "./components/MusicPlayer";
 import MoodChart from "./components/MoodChart";
@@ -7,9 +8,8 @@ import SuggestionCard from "./components/SuggestionCard";
 function App() {
   return (
     <div className="min-h-screen bg-[#0f0f14] text-white flex">
-      
       {/* LEFT */}
-      <div className="w-1/4 p-4 border-r border-gray-800">
+      <div className="w-1/3 p-4 min-h-[400px]">
         <CameraFeed />
       </div>
 
@@ -24,7 +24,6 @@ function App() {
         <MoodChart />
         <SuggestionCard />
       </div>
-
     </div>
   );
 }
