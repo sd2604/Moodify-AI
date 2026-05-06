@@ -4,8 +4,6 @@ import { emotionMap } from "../utils/emotionMap";
 
 export default function MusicPlayer({ emotion }) {
   const [songs, setSongs] = useState([]);
-
-  // ✅ FIXED audio handling
   const audioRef = useRef(null);
 
   function playSong(url) {
@@ -15,17 +13,30 @@ export default function MusicPlayer({ emotion }) {
       audioRef.current.pause();
     }
 
-    audioRef.current = new Audio(url);
-    audioRef.current.play();
+    const newAudio = new Audio(url);
+
+    newAudio.play().catch(() => {
+      console.log("Playback interrupted");
+    });
+
+    audioRef.current = newAudio;
+  }
+
+  function stopSong() {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
   }
 
   useEffect(() => {
     async function loadSongs() {
       if (!emotion) return;
 
-      const genre = emotionMap[emotion];
-      const data = await getSongs(genre);
+      const genres = emotionMap[emotion];
+      const genre = genres[Math.floor(Math.random() * genres.length)];
 
+      const data = await getSongs(genre);
       setSongs(data);
     }
 
@@ -34,30 +45,33 @@ export default function MusicPlayer({ emotion }) {
 
   return (
     <div className="bg-gray-900 p-6 rounded-xl text-center text-white w-full">
-      <h2 className="text-xl font-bold mb-4">Music Player</h2>
 
       {songs.length === 0 ? (
-        <p>Loading songs...</p>
+        <p className="text-gray-400">Loading songs...</p>
       ) : (
         songs.map((song) => (
-          <div key={song.id} className="mb-4">
+          <div key={song.id} className="mb-6 border-b border-gray-700 pb-4">
             <p className="font-semibold">{song.name}</p>
+
             <p className="text-sm text-gray-400">
-              {song.artists.map((artist) => artist.name).join(", ")}
+              {song.artists.map((a) => a.name).join(", ")}
             </p>
 
-            {song.preview_url ? (
+            <div className="mt-2 flex justify-center gap-2">
               <button
                 onClick={() => playSong(song.preview_url)}
-                className="bg-purple-600 px-3 py-1 rounded mt-2"
+                className="bg-purple-600 px-3 py-1 rounded"
               >
-                ▶ Play
+                Play
               </button>
-            ) : (
-              <p className="text-xs text-gray-500 mt-1">
-                No preview available
-              </p>
-            )}
+
+              <button
+                onClick={stopSong}
+                className="bg-red-500 px-3 py-1 rounded"
+              >
+                Stop
+              </button>
+            </div>
           </div>
         ))
       )}

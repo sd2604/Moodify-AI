@@ -1,6 +1,6 @@
 export const emotionMap = {
-  happy: "pop",
-  sad: "acoustic",
-  angry: "rock",
-  neutral: "chill"
+  happy: ["pop", "dance", "party"],
+  sad: ["sad", "acoustic", "piano"],
+  angry: ["rock", "metal", "rap"],
+  neutral: ["chill", "lofi", "indie"],
 };
