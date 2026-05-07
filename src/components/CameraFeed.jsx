@@ -8,6 +8,8 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
   const [isModelsLoaded, setIsModelsLoaded] = useState(false);
   const [faceDetected, setFaceDetected] = useState(false);
   const [confidence, setConfidence] = useState(0);
+  const lastEmotionRef = useRef(currentEmotion);
+  const consecutiveCounts = useRef({ emotion: null, count: 0 });
 
   useEffect(() => {
     const loadModels = async () => {
@@ -42,7 +44,7 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
 
   const handleVideoPlay = () => {
     setInterval(async () => {
-      if (videoRef.current) {
+      if (videoRef.current && videoRef.current.readyState === 4) {
         const detections = await faceapi.detectSingleFace(
           videoRef.current,
           new faceapi.TinyFaceDetectorOptions()
@@ -52,24 +54,35 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
           setFaceDetected(true);
           const expressions = detections.expressions;
           
-          // Map face-api expressions to our states: happy, sad, angry, neutral, surprised (map surprised to energetic/zap or just handle it)
-          // For simplicity we will stick to: happy, sad, angry, neutral
           const sortedExpressions = Object.entries(expressions).sort((a, b) => b[1] - a[1]);
           const dominantExpression = sortedExpressions[0];
+          const score = dominantExpression[1];
           
           let emotionStr = dominantExpression[0];
-          if (emotionStr === 'surprised') emotionStr = 'happy'; // Mapping surprise to happy/energetic
+          if (emotionStr === 'surprised') emotionStr = 'happy';
           if (emotionStr === 'fear' || emotionStr === 'disgust') emotionStr = 'angry';
           
-          setConfidence(Math.round(dominantExpression[1] * 100));
-          if (emotionStr !== currentEmotion) {
-             setCurrentEmotion(emotionStr);
+          setConfidence(Math.round(score * 100));
+
+          if (score > 0.6) {
+            if (consecutiveCounts.current.emotion === emotionStr) {
+              consecutiveCounts.current.count += 1;
+            } else {
+              consecutiveCounts.current.emotion = emotionStr;
+              consecutiveCounts.current.count = 1;
+            }
+
+            if (consecutiveCounts.current.count >= 2 && lastEmotionRef.current !== emotionStr) {
+              lastEmotionRef.current = emotionStr;
+              setCurrentEmotion(emotionStr);
+            }
           }
         } else {
           setFaceDetected(false);
+          consecutiveCounts.current = { emotion: null, count: 0 };
         }
       }
-    }, 1000);
+    }, 500);
   };
 
   const manualMoods = [
@@ -121,6 +134,28 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
                 transition={{ repeat: Infinity, duration: 2 }}
               />
             )}
+            
+            {faceDetected && confidence > 60 && (
+              <motion.div
+                className="absolute top-4 right-4 glass-panel px-4 py-2 rounded-full border border-white/20 flex items-center gap-2 pointer-events-none z-10"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                key={`badge-${currentEmotion}`}
+              >
+                <span className="text-xl">
+                  {currentEmotion === 'happy' ? '😊' : currentEmotion === 'sad' ? '😢' : currentEmotion === 'angry' ? '😡' : '😌'}
+                </span>
+                <span className={`font-space font-bold uppercase text-glow text-gradient-${currentEmotion}`}>
+                  {currentEmotion}
+                </span>
+              </motion.div>
+            )}
+
+            {!faceDetected && (
+              <div className="absolute top-4 right-4 glass-panel px-4 py-2 rounded-full border border-white/20 pointer-events-none z-10">
+                <span className="font-space text-sm text-white/70 animate-pulse">Scanning...</span>
+              </div>
+            )}
           </>
         )}
       </div>
@@ -142,7 +177,7 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
           </motion.div>
         ) : (
            <div className="text-center font-space">
-             <p className="text-white/50 text-sm mb-4">No face detected. Select manually:</p>
+             <p className="text-white/50 text-sm mb-4">Scanning... (Or select manually):</p>
              <div className="flex flex-wrap gap-2 justify-center">
                {manualMoods.map(mood => (
                  <button
