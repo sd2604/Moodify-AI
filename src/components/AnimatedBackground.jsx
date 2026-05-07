@@ -72,6 +72,42 @@ const AnimatedBackground = ({ currentEmotion }) => {
       
       {/* Noise Overlay */}
       <div className="noise-overlay" />
+      
+      {/* Floating Particles */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-white rounded-full opacity-30"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              boxShadow: `0 0 ${Math.random() * 10 + 5}px rgba(255, 255, 255, 0.8)`
+            }}
+            animate={{
+              y: [0, -100, 0],
+              x: [0, Math.random() * 50 - 25, 0],
+              opacity: [0.1, 0.5, 0.1]
+            }}
+            transition={{
+              duration: Math.random() * 10 + 10,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Animated Mesh Glow overlay */}
+      <motion.div 
+        className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-20"
+        style={{
+          backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)',
+          backgroundSize: '40px 40px'
+        }}
+        animate={{ backgroundPosition: ['0px 0px', '40px 40px'] }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+      />
     </div>
   );
 };

@@ -15,14 +15,17 @@ const LiveLyricsPanel = ({ currentlyPlaying }) => {
       setLoading(true);
       setLyrics("");
       try {
-        // Clean up title for better search results (remove " (feat. XYZ)" etc)
-        const title = currentlyPlaying.trackName.split(' (')[0].split(' -')[0];
-        const artist = currentlyPlaying.artistName.split(' &')[0];
+        // Clean up title for better search results (remove " (feat. XYZ)", remaster, etc)
+        const rawTitle = currentlyPlaying.trackName;
+        const rawArtist = currentlyPlaying.artistName;
+        
+        const title = rawTitle.replace(/\s*\(.*\)/, '').replace(/\s*\[.*\]/, '').split('-')[0].trim();
+        const artist = rawArtist.split(' &')[0].split(',')[0].trim();
         
         const res = await axios.get(`https://api.lyrics.ovh/v1/${encodeURIComponent(artist)}/${encodeURIComponent(title)}`);
         
         if (res.data && res.data.lyrics) {
-           setLyrics(res.data.lyrics.replace(/Paroles de la chanson .+\n/i, ''));
+           setLyrics(res.data.lyrics.replace(/Paroles de la chanson .+\n/i, '').trim());
         } else {
            setLyrics("");
         }
@@ -66,17 +69,10 @@ const LiveLyricsPanel = ({ currentlyPlaying }) => {
   }, [activeLineIdx]);
 
   return (
-    <motion.div 
-      className="glass-panel p-6 rounded-3xl flex-1 flex flex-col relative overflow-hidden group hover:border-purple-500/30 hover:shadow-[0_0_40px_rgba(168,85,247,0.15)] transition-all duration-500"
-      initial={{ opacity: 0, x: 50 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.5 }}
-    >
-      {/* Background Subtle Blur Glow */}
-      <div className="absolute inset-0 bg-purple-500/5 mix-blend-screen pointer-events-none rounded-3xl" />
+    <div className="flex-1 flex flex-col relative overflow-hidden group w-full h-full">
 
-      <div className="flex items-center justify-between mb-6 z-10 relative">
-        <h3 className="font-bebas text-2xl flex items-center gap-2 text-white">
+      <div className="flex items-center justify-between p-4 z-10 relative bg-black/20 border-b border-white/5">
+        <h3 className="font-bebas text-lg flex items-center gap-2 text-white tracking-widest">
           🎵 LIVE LYRICS
           
           {/* Animated Equalizer */}
@@ -120,14 +116,6 @@ const LiveLyricsPanel = ({ currentlyPlaying }) => {
           >
             {currentlyPlaying ? (
               <>
-                {/* Header Information */}
-                <div className="mb-4 text-center border-b border-white/10 pb-4">
-                  <h4 className="font-bebas text-3xl tracking-wide truncate text-white">{currentlyPlaying.trackName}</h4>
-                  <p className="font-space text-sm font-bold text-purple-300 text-glow truncate mt-1">
-                    {currentlyPlaying.artistName}
-                  </p>
-                </div>
-                
                 {/* Lyrics Scroller */}
                 <div className="relative flex-1 overflow-hidden">
                   {/* Top Fade */}
@@ -143,7 +131,7 @@ const LiveLyricsPanel = ({ currentlyPlaying }) => {
                         return (
                           <motion.p 
                             key={idx}
-                            className={`font-inter text-xl text-center mb-6 transition-all duration-700 cursor-default ${isActive ? 'active-lyric text-white text-glow scale-110 font-medium' : 'text-white/40 scale-100'} hover:text-white hover:scale-105`}
+                            className={`font-inter text-lg text-center mb-6 transition-all duration-700 cursor-default ${isActive ? 'active-lyric text-white text-glow scale-105 font-medium' : 'text-white/30 scale-95'} hover:text-white hover:scale-105`}
                           >
                             {line}
                           </motion.p>
@@ -168,7 +156,7 @@ const LiveLyricsPanel = ({ currentlyPlaying }) => {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 };
 
