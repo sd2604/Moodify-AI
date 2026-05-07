@@ -5,8 +5,7 @@ import AnimatedBackground from './components/AnimatedBackground';
 import CameraFeed from './components/CameraFeed';
 import MusicPlayer from './components/MusicPlayer';
 import MoodChart from './components/MoodChart';
-import SuggestionCard from './components/SuggestionCard';
-import LyricsPanel from './components/LyricsPanel';
+import LiveLyricsPanel from './components/LiveLyricsPanel';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -60,8 +59,7 @@ function App() {
             {/* Right Panel: Analytics & Suggestions */}
             <div className="w-full md:w-1/4 h-full flex flex-col gap-6 overflow-y-auto pb-8">
               <MoodChart moodHistory={moodHistory} />
-              <SuggestionCard currentEmotion={currentEmotion} />
-              <LyricsPanel currentlyPlaying={currentlyPlaying} />
+              <LiveLyricsPanel currentlyPlaying={currentlyPlaying} />
             </div>
           </motion.div>
         </>
