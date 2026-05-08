@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as faceapi from 'face-api.js';
 import { motion } from 'framer-motion';
 import { Camera, Smile, Frown, Zap, Coffee, CircleOff } from 'lucide-react';
+import cameraFrame from '../images/camera-frame.png';
 
 const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
   const videoRef = useRef();
@@ -105,47 +106,49 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
       </h2>
 
       <div className="relative aspect-video rounded-2xl overflow-hidden bg-black/45 border border-white/10 backdrop-blur-md flex items-center justify-center p-4 md:p-6">
-        {!isModelsLoaded ? (
-          <div className="flex flex-col items-center animate-pulse">
-            <div className="w-8 h-8 border-2 border-white/50 border-t-white rounded-full animate-spin mb-2" />
-            <span className="text-sm text-white/50 font-space">Loading AI Models...</span>
-          </div>
-        ) : (
-          <>
-            <div className="relative w-full max-w-[560px] aspect-[4/3] rounded-2xl overflow-hidden bg-black/50 border border-white/15 shadow-[0_0_30px_rgba(56,189,248,0.12)]">
-              <video 
-                ref={videoRef}
-                autoPlay 
-                muted 
-                onPlay={handleVideoPlay}
-                className="w-full h-full object-cover opacity-85"
-              />
-
-              {/* Transparent futuristic frame */}
-              <div className="absolute inset-0 pointer-events-none z-20">
-                <div className="absolute inset-0 rounded-2xl border border-white/10" />
-                <div className="absolute inset-x-[14%] inset-y-[12%] rounded-xl border border-white/15" />
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-30" />
-
-                <div className="absolute top-0 left-0 w-10 h-10 rounded-tl-2xl border-t-2 border-l-2 border-cyan-300/70 shadow-[0_0_14px_rgba(103,232,249,0.45)]" />
-                <div className="absolute top-0 right-0 w-10 h-10 rounded-tr-2xl border-t-2 border-r-2 border-violet-300/70 shadow-[0_0_14px_rgba(196,181,253,0.45)]" />
-                <div className="absolute bottom-0 left-0 w-10 h-10 rounded-bl-2xl border-b-2 border-l-2 border-violet-300/70 shadow-[0_0_14px_rgba(196,181,253,0.45)]" />
-                <div className="absolute bottom-0 right-0 w-10 h-10 rounded-br-2xl border-b-2 border-r-2 border-cyan-300/70 shadow-[0_0_14px_rgba(103,232,249,0.45)]" />
-
-                <div className="absolute inset-x-[10%] top-1/2 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
-                <div className="absolute inset-y-[10%] left-1/2 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent" />
-
-                <motion.div
-                  className="absolute left-[8%] right-[8%] h-[1.5px] bg-gradient-to-r from-transparent via-cyan-200/70 to-transparent"
-                  animate={{ y: ['18%', '82%', '18%'], opacity: [0.25, 0.55, 0.25] }}
-                  transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut' }}
-                />
-                <div className="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-cyan-200/10 to-transparent" />
+        <div className="relative w-full max-w-[620px] aspect-[860/599]">
+          {/* Live feed embedded inside transparent screen region */}
+          <div className="absolute left-[15.2%] top-[40.3%] w-[52.2%] h-[48.8%] rounded-[8%] overflow-hidden shadow-[0_0_20px_rgba(34,211,238,0.15)]">
+            {!isModelsLoaded ? (
+              <div className="w-full h-full bg-black/40 flex flex-col items-center justify-center animate-pulse">
+                <div className="w-8 h-8 border-2 border-white/50 border-t-white rounded-full animate-spin mb-2" />
+                <span className="text-xs text-white/60 font-space">Loading AI Models...</span>
               </div>
-            </div>
+            ) : (
+              <video
+                ref={videoRef}
+                autoPlay
+                muted
+                onPlay={handleVideoPlay}
+                className="w-full h-full object-cover opacity-90"
+              />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-200/10 via-transparent to-violet-300/10 pointer-events-none" />
+            <div className="absolute inset-0 border border-white/10 rounded-[8%] pointer-events-none" />
+            <motion.div
+              className="absolute left-[8%] right-[8%] h-[1.5px] bg-gradient-to-r from-transparent via-cyan-200/70 to-transparent"
+              animate={{ y: ['14%', '86%', '14%'], opacity: [0.25, 0.55, 0.25] }}
+              transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          </div>
+
+          {/* Camera frame image overlay */}
+          <img
+            src={cameraFrame}
+            alt="AI scanner camera frame"
+            className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none drop-shadow-[0_18px_30px_rgba(0,0,0,0.45)]"
+          />
+
+          {/* subtle lens glass reflection */}
+          <div className="absolute left-[23%] top-[44%] w-[20%] h-[10%] rounded-full bg-white/20 blur-sm opacity-40 pointer-events-none" />
+          <div className="absolute left-[16%] top-[40.3%] w-[50%] h-[48.8%] rounded-[8%] border border-cyan-300/15 pointer-events-none shadow-[0_0_18px_rgba(103,232,249,0.2),0_0_14px_rgba(196,181,253,0.16)]" />
+        </div>
+        {isModelsLoaded && (
+          <>
             {faceDetected && (
               <motion.div 
-                className={`absolute inset-0 pointer-events-none opacity-20 bg-gradient-to-t from-transparent to-${currentEmotion === 'happy' ? 'pink-500' : 'blue-500'}`}
+                className={`absolute left-[15.2%] top-[40.3%] w-[52.2%] h-[48.8%] rounded-[8%] pointer-events-none opacity-20 bg-gradient-to-t from-transparent to-${currentEmotion === 'happy' ? 'pink-500' : 'blue-500'}`}
                 animate={{ opacity: [0.1, 0.3, 0.1] }}
                 transition={{ repeat: Infinity, duration: 2 }}
               />
