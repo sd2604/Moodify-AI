@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Music2, Pause, Play } from 'lucide-react';
+import { Music2, Play } from 'lucide-react';
 
-const RecommendedSongs = ({ currentEmotion, songs, loading, currentlyPlaying, onSelectSong, isPlaying }) => {
+const RecommendedSongs = ({ currentEmotion, songs, loading, currentlyPlaying, onSelectSong }) => {
   return (
     <div className="glass-panel p-5 rounded-3xl h-full flex flex-col overflow-hidden">
       {/* Header explains why these songs are shown. */}
@@ -25,9 +25,6 @@ const RecommendedSongs = ({ currentEmotion, songs, loading, currentlyPlaying, on
           <div className="min-w-0">
             <p className="font-space text-sm font-semibold truncate">{currentlyPlaying.trackName}</p>
             <p className="font-space text-xs text-white/60 truncate">{currentlyPlaying.artistName}</p>
-          </div>
-          <div className="w-9 h-9 rounded-full border border-white/20 bg-white/10 flex items-center justify-center">
-            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
           </div>
         </div>
       )}
