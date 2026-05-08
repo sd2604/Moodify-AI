@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import LoadingScreen from './components/LoadingScreen';
@@ -17,6 +18,19 @@ function App() {
   // Media States
   const [playlistMeta, setPlaylistMeta] = useState({ title: "Welcome to Moodify", description: "Your AI powered music journey", totalSongs: 0 });
   const [playlist, setPlaylist] = useState([]);
+=======
+import React, { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import LoadingScreen from './components/LoadingScreen';
+import AnimatedBackground from './components/AnimatedBackground';
+import CameraFeed from './components/CameraFeed';
+import MusicPlayer from './components/MusicPlayer';
+import LyricsPanel from './components/LyricsPanel';
+
+function App() {
+  const [loading, setLoading] = useState(true);
+  const [currentEmotion, setCurrentEmotion] = useState('neutral');
+>>>>>>> 8045b8a
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -37,6 +51,7 @@ function App() {
 
   const [toastMessage, setToastMessage] = useState(null);
 
+<<<<<<< HEAD
   useEffect(() => {
     localStorage.setItem('moodify_liked', JSON.stringify(likedSongs));
   }, [likedSongs]);
@@ -160,6 +175,8 @@ function App() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
+=======
+>>>>>>> 8045b8a
   return (
     <div className="h-screen relative overflow-hidden font-inter text-white flex flex-col bg-[#050505]">
       <div id="custom-cursor" className="custom-cursor hidden md:block" />
@@ -187,6 +204,7 @@ function App() {
         <div className="flex flex-col h-screen relative z-10 w-full overflow-hidden">
           <AnimatedBackground currentEmotion={currentEmotion} />
           
+<<<<<<< HEAD
           {/* Main Workspace (Top) */}
           <div className="flex-1 flex overflow-hidden w-full relative z-20">
             <Sidebar 
@@ -238,6 +256,34 @@ function App() {
             toggleLiked={toggleLiked}
           />
         </div>
+=======
+          {/* Main Dashboard Layout */}
+          <motion.div 
+            className="container mx-auto px-4 py-8 h-screen flex flex-col md:flex-row gap-6"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.5 }}
+          >
+            {/* Left Panel: Emotion Detection */}
+            <div className="w-full md:w-1/3 lg:w-1/4 h-full flex flex-col gap-6">
+              <CameraFeed 
+                currentEmotion={currentEmotion} 
+                setCurrentEmotion={setCurrentEmotion} 
+              />
+            </div>
+
+            {/* Center Panel: Music Player & Lyrics */}
+            <div className="w-full md:w-2/3 lg:w-3/4 h-full flex flex-col gap-6 overflow-y-auto pb-8">
+              <MusicPlayer 
+                currentEmotion={currentEmotion}
+                currentlyPlaying={currentlyPlaying}
+                setCurrentlyPlaying={setCurrentlyPlaying}
+              />
+              <LyricsPanel currentlyPlaying={currentlyPlaying} />
+            </div>
+          </motion.div>
+        </>
+>>>>>>> 8045b8a
       )}
     </div>
   );
