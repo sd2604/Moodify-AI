@@ -6,6 +6,7 @@ import cameraFrame from '../images/camera-frame.png';
 
 const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
   const videoRef = useRef();
+  const detectionIntervalRef = useRef(null);
   const [isModelsLoaded, setIsModelsLoaded] = useState(false);
   const [faceDetected, setFaceDetected] = useState(false);
   const [confidence, setConfidence] = useState(0);
@@ -28,11 +29,24 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
   }, []);
 
   useEffect(() => {
-    if (isModelsLoaded) {
-      startVideo();
-    }
+    if (!isModelsLoaded) return;
+    startVideo();
   }, [isModelsLoaded]);
 
+  useEffect(() => {
+    // Cleanup to prevent duplicate intervals and camera stream leaks.
+    return () => {
+      if (detectionIntervalRef.current) {
+        clearInterval(detectionIntervalRef.current);
+      }
+      if (videoRef.current?.srcObject) {
+        const tracks = videoRef.current.srcObject.getTracks();
+        tracks.forEach((track) => track.stop());
+      }
+    };
+  }, []);
+
+  // Starts webcam stream after model load.
   const startVideo = () => {
     navigator.mediaDevices.getUserMedia({ video: true })
       .then((stream) => {
@@ -43,8 +57,20 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
       .catch((err) => console.error("Error accessing webcam", err));
   };
 
+  // Converts less useful labels into app-supported moods.
+  const normalizeEmotion = (emotion) => {
+    if (emotion === 'surprised') return 'happy';
+    if (emotion === 'fear' || emotion === 'disgust') return 'angry';
+    return emotion;
+  };
+
+  // Runs every 500ms while video is playing and updates mood safely.
   const handleVideoPlay = () => {
-    setInterval(async () => {
+    if (detectionIntervalRef.current) {
+      clearInterval(detectionIntervalRef.current);
+    }
+
+    detectionIntervalRef.current = setInterval(async () => {
       if (videoRef.current && videoRef.current.readyState === 4) {
         const detections = await faceapi.detectSingleFace(
           videoRef.current,
@@ -59,9 +85,7 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
           const dominantExpression = sortedExpressions[0];
           const score = dominantExpression[1];
           
-          let emotionStr = dominantExpression[0];
-          if (emotionStr === 'surprised') emotionStr = 'happy';
-          if (emotionStr === 'fear' || emotionStr === 'disgust') emotionStr = 'angry';
+          const emotionStr = normalizeEmotion(dominantExpression[0]);
           
           setConfidence(Math.round(score * 100));
 
@@ -80,12 +104,14 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
           }
         } else {
           setFaceDetected(false);
+          setConfidence(0);
           consecutiveCounts.current = { emotion: null, count: 0 };
         }
       }
     }, 500);
   };
 
+  // Manual fallback moods are useful when face is not detected.
   const manualMoods = [
     { name: 'happy', icon: <Smile className="w-5 h-5" /> },
     { name: 'sad', icon: <Frown className="w-5 h-5" /> },

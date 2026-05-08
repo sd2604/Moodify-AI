@@ -1,49 +1,53 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
+// Central color config keeps emotion visuals easy to understand and edit.
+const emotionVisuals = {
+  happy: {
+    gradient: 'radial-gradient(circle at 50% 50%, rgba(255, 0, 128, 0.15), rgba(0, 0, 0, 1))',
+    blob1: '#ff0080',
+    blob2: '#7928ca',
+  },
+  sad: {
+    gradient: 'radial-gradient(circle at 50% 50%, rgba(0, 102, 255, 0.15), rgba(0, 0, 0, 1))',
+    blob1: '#0066ff',
+    blob2: '#00ccff',
+  },
+  angry: {
+    gradient: 'radial-gradient(circle at 50% 50%, rgba(255, 20, 20, 0.15), rgba(0, 0, 0, 1))',
+    blob1: '#ff1414',
+    blob2: '#ff8a00',
+  },
+  calm: {
+    gradient: 'radial-gradient(circle at 50% 50%, rgba(0, 204, 255, 0.15), rgba(0, 0, 0, 1))',
+    blob1: '#00ccff',
+    blob2: '#00ffcc',
+  },
+  neutral: {
+    gradient: 'radial-gradient(circle at 50% 50%, rgba(128, 128, 128, 0.15), rgba(0, 0, 0, 1))',
+    blob1: '#808080',
+    blob2: '#4a4a4a',
+  },
+};
+
 const AnimatedBackground = ({ currentEmotion }) => {
-  const getGradientColor = () => {
-    switch (currentEmotion) {
-      case 'happy': return 'radial-gradient(circle at 50% 50%, rgba(255, 0, 128, 0.15), rgba(0, 0, 0, 1))';
-      case 'sad': return 'radial-gradient(circle at 50% 50%, rgba(0, 102, 255, 0.15), rgba(0, 0, 0, 1))';
-      case 'angry': return 'radial-gradient(circle at 50% 50%, rgba(255, 20, 20, 0.15), rgba(0, 0, 0, 1))';
-      case 'calm': return 'radial-gradient(circle at 50% 50%, rgba(0, 204, 255, 0.15), rgba(0, 0, 0, 1))';
-      case 'neutral':
-      default: return 'radial-gradient(circle at 50% 50%, rgba(128, 128, 128, 0.15), rgba(0, 0, 0, 1))';
-    }
-  };
-
-  const blobColor1 = {
-    happy: '#ff0080',
-    sad: '#0066ff',
-    angry: '#ff1414',
-    calm: '#00ccff',
-    neutral: '#808080'
-  }[currentEmotion] || '#808080';
-
-  const blobColor2 = {
-    happy: '#7928ca',
-    sad: '#00ccff',
-    angry: '#ff8a00',
-    calm: '#00ffcc',
-    neutral: '#4a4a4a'
-  }[currentEmotion] || '#4a4a4a';
+  const selectedEmotionVisual = emotionVisuals[currentEmotion] || emotionVisuals.neutral;
 
   return (
     <div className="fixed inset-0 z-[-1] overflow-hidden bg-[#050505]">
-      {/* Dynamic Background Gradient */}
+      {/* Base mood gradient creates overall tone for the page. */}
       <motion.div
         className="absolute inset-0 transition-all duration-1000 ease-in-out"
-        style={{ background: getGradientColor() }}
+        style={{ background: selectedEmotionVisual.gradient }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
       />
       
-      {/* Floating Blobs */}
+      {/* Two moving blurred blobs add soft motion depth. */}
       <motion.div
         className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full mix-blend-screen filter blur-[100px] opacity-20"
-        style={{ backgroundColor: blobColor1 }}
+        style={{ backgroundColor: selectedEmotionVisual.blob1 }}
         animate={{
           x: [0, 50, -50, 0],
           y: [0, -50, 50, 0],
@@ -57,7 +61,7 @@ const AnimatedBackground = ({ currentEmotion }) => {
       />
       <motion.div
         className="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full mix-blend-screen filter blur-[120px] opacity-15"
-        style={{ backgroundColor: blobColor2 }}
+        style={{ backgroundColor: selectedEmotionVisual.blob2 }}
         animate={{
           x: [0, -60, 60, 0],
           y: [0, 60, -60, 0],

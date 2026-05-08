@@ -10,13 +10,14 @@ const LoadingScreen = ({ onComplete }) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 1, ease: "easeInOut" }}
       onAnimationComplete={() => {
+        // Keep intro visible for 3 seconds, then reveal main dashboard.
         setTimeout(() => {
           if (onComplete) onComplete();
-        }, 3000); // Wait 3 seconds then exit
+        }, 3000);
       }}
     >
       <div className="relative flex flex-col items-center justify-center">
-        {/* Glowing Pulse Rings */}
+        {/* Decorative pulse rings for startup atmosphere. */}
         <motion.div
           className="absolute w-[300px] h-[300px] rounded-full border border-white/10"
           animate={{ scale: [1, 1.5, 2], opacity: [0.8, 0.3, 0] }}
@@ -28,7 +29,7 @@ const LoadingScreen = ({ onComplete }) => {
           transition={{ duration: 2, repeat: Infinity, ease: "easeOut", delay: 0.5 }}
         />
         
-        {/* Floating Logo/Orb */}
+        {/* Central animated orb acts as loading logo. */}
         <motion.div
           className="w-24 h-24 rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-cyan-500 shadow-[0_0_50px_rgba(255,0,255,0.5)] z-10"
           animate={{ 
@@ -41,7 +42,7 @@ const LoadingScreen = ({ onComplete }) => {
           }}
         />
 
-        {/* Text */}
+        {/* Brand text + status message. */}
         <motion.h1
           className="mt-10 font-bebas text-5xl tracking-widest text-white text-glow"
           initial={{ opacity: 0, y: 20 }}

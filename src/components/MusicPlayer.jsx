@@ -3,7 +3,8 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, SkipForward, Disc3, Music, Heart } from 'lucide-react';
 
-const emotionGenreMap = {
+// Maps mood to iTunes search genre.
+const emotionToGenreMap = {
   happy: 'dance',
   sad: 'acoustic',
   angry: 'rock',
@@ -12,6 +13,7 @@ const emotionGenreMap = {
 };
 
 const MusicPlayer = ({ currentEmotion, currentlyPlaying, setCurrentlyPlaying }) => {
+  // Player-local queue and playback controls.
   const [songs, setSongs] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -20,7 +22,7 @@ const MusicPlayer = ({ currentEmotion, currentlyPlaying, setCurrentlyPlaying }) 
   const fetchMusic = async (emotion) => {
     setLoading(true);
     try {
-      const genre = emotionGenreMap[emotion] || 'pop';
+      const genre = emotionToGenreMap[emotion] || 'pop';
       const randomOffset = Math.floor(Math.random() * 50);
       const res = await axios.get(`https://itunes.apple.com/search?term=${genre}&entity=song&limit=10&offset=${randomOffset}`);
       if (res.data.results && res.data.results.length > 0) {
@@ -37,10 +39,12 @@ const MusicPlayer = ({ currentEmotion, currentlyPlaying, setCurrentlyPlaying }) 
   };
 
   useEffect(() => {
+    // Refresh song list when mood changes.
     fetchMusic(currentEmotion);
   }, [currentEmotion]);
 
   useEffect(() => {
+    // Sync play/pause state with audio element.
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.play().catch(e => console.log('Audio play blocked:', e));
@@ -51,6 +55,7 @@ const MusicPlayer = ({ currentEmotion, currentlyPlaying, setCurrentlyPlaying }) 
   }, [isPlaying, currentlyPlaying]);
 
   const handleNext = () => {
+    // Circular next-song navigation.
     if (songs.length > 0) {
       const currentIndex = songs.findIndex(s => s.trackId === currentlyPlaying?.trackId);
       const nextIndex = (currentIndex + 1) % songs.length;
@@ -60,6 +65,7 @@ const MusicPlayer = ({ currentEmotion, currentlyPlaying, setCurrentlyPlaying }) 
   };
 
   const togglePlay = () => {
+    // Simple play/pause toggle.
     setIsPlaying(!isPlaying);
   };
 

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Play, Pause, Shuffle, SkipForward, SkipBack, Repeat, Volume2, ListMusic, Heart, Mic2 } from 'lucide-react';
 
 const BottomPlayer = ({ currentlyPlaying, isPlaying, togglePlay, progress, volume, isShuffled, toggleShuffle, handleVolumeChange, handleSeek, handleNext, handlePrev, handleTimeUpdate, audioRef, likedSongs, toggleLiked }) => {
+  // Check if current song exists in liked songs list.
   const isLiked = currentlyPlaying ? likedSongs.find(s => s.trackId === currentlyPlaying.trackId) : false;
   
   return (
@@ -43,7 +44,7 @@ const BottomPlayer = ({ currentlyPlaying, isPlaying, togglePlay, progress, volum
         )}
       </div>
 
-      {/* Center: Controls & Progress */}
+      {/* Center section: transport controls and seek bar */}
       <div className="w-1/3 flex flex-col items-center justify-center gap-2">
         <div className="flex items-center gap-6">
           <button 
@@ -87,7 +88,7 @@ const BottomPlayer = ({ currentlyPlaying, isPlaying, togglePlay, progress, volum
         </div>
       </div>
 
-      {/* Right: Actions & Volume */}
+      {/* Right section: extra actions and volume control */}
       <div className="w-1/3 flex items-center justify-end gap-4 pr-2">
         <button className="text-white/50 hover:text-white transition-colors">
           <Mic2 className="w-4 h-4" />

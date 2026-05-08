@@ -3,17 +3,19 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const LiveLyricsPanel = ({ currentlyPlaying }) => {
-  const [lyrics, setLyrics] = useState("");
+  // State for fetched lyrics and active scrolling line.
+  const [lyrics, setLyrics] = useState('');
   const [loading, setLoading] = useState(false);
   const [activeLineIdx, setActiveLineIdx] = useState(0);
   const containerRef = useRef(null);
 
   useEffect(() => {
+    // Fetch lyrics whenever active song changes.
     const fetchLyrics = async () => {
       if (!currentlyPlaying) return;
       
       setLoading(true);
-      setLyrics("");
+      setLyrics('');
       try {
         // Clean up title for better search results (remove " (feat. XYZ)", remaster, etc)
         const rawTitle = currentlyPlaying.trackName;
@@ -25,13 +27,13 @@ const LiveLyricsPanel = ({ currentlyPlaying }) => {
         const res = await axios.get(`https://api.lyrics.ovh/v1/${encodeURIComponent(artist)}/${encodeURIComponent(title)}`);
         
         if (res.data && res.data.lyrics) {
-           setLyrics(res.data.lyrics.replace(/Paroles de la chanson .+\n/i, '').trim());
+          setLyrics(res.data.lyrics.replace(/Paroles de la chanson .+\n/i, '').trim());
         } else {
-           setLyrics("");
+          setLyrics('');
         }
       } catch (err) {
-        console.error("Error fetching lyrics", err);
-        setLyrics("");
+        console.error('Error fetching lyrics', err);
+        setLyrics('');
       }
       setLoading(false);
     };
@@ -41,7 +43,7 @@ const LiveLyricsPanel = ({ currentlyPlaying }) => {
 
   const lyricsLines = lyrics ? lyrics.split('\n').filter(line => line.trim() !== '') : [];
 
-  // Simulated live synced scrolling
+  // Simulated lyric sync for 30-second preview audio.
   useEffect(() => {
     if (!lyricsLines.length) return;
     setActiveLineIdx(0);

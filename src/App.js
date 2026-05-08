@@ -7,7 +7,8 @@ import CameraFeed from './components/CameraFeed';
 import LyricsPanel from './components/LyricsPanel';
 import RecommendedSongs from './components/RecommendedSongs';
 
-const emotionGenreMap = {
+// This map decides which music genre we fetch for each detected emotion.
+const emotionToGenreMap = {
   happy: 'dance',
   sad: 'acoustic',
   angry: 'rock',
@@ -16,6 +17,7 @@ const emotionGenreMap = {
 };
 
 function App() {
+  // App-level state that is shared between camera, lyrics, and recommendation panels.
   const [loading, setLoading] = useState(true);
   const [currentEmotion, setCurrentEmotion] = useState('neutral');
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
@@ -24,10 +26,11 @@ function App() {
   const [recommendationsLoading, setRecommendationsLoading] = useState(false);
 
   useEffect(() => {
+    // Whenever emotion changes, fetch a fresh recommendation list from iTunes.
     const fetchRecommendations = async () => {
       setRecommendationsLoading(true);
       try {
-        const genre = emotionGenreMap[currentEmotion] || 'pop';
+        const genre = emotionToGenreMap[currentEmotion] || 'pop';
         const randomOffset = Math.floor(Math.random() * 50);
         const res = await axios.get(
           `https://itunes.apple.com/search?term=${genre}&entity=song&limit=10&offset=${randomOffset}`
@@ -44,6 +47,7 @@ function App() {
     fetchRecommendations();
   }, [currentEmotion]);
 
+  // Called when user selects any song from recommendations.
   const handleSelectSong = (song) => {
     setCurrentlyPlaying(song);
     setIsPlaying(true);

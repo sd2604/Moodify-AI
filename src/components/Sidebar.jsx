@@ -1,21 +1,23 @@
 import React from 'react';
 import { Home, ScanFace, Library, Heart, History, Compass, Plus, ListMusic } from 'lucide-react';
-
 import axios from 'axios';
 
 const Sidebar = ({ activeView, setActiveView, setPlaylist, setPlaylistMeta }) => {
+  // Primary app navigation links.
   const navLinks = [
     { icon: <Home className="w-5 h-5" />, label: 'Home' },
     { icon: <ScanFace className="w-5 h-5" />, label: 'AI Mood Scan' },
     { icon: <Compass className="w-5 h-5" />, label: 'Discover' },
   ];
 
+  // Secondary library section links.
   const libraryLinks = [
     { icon: <Library className="w-5 h-5" />, label: 'Playlists' },
     { icon: <Heart className="w-5 h-5" />, label: 'Liked Songs' },
     { icon: <History className="w-5 h-5" />, label: 'Recent Moods' },
   ];
 
+  // Quick static playlists fetched using fixed search keywords.
   const miniPlaylists = [
     { label: "Hindi Hits", query: "Bollywood hits" },
     { label: "Chill Mix", query: "chill lofi" },
@@ -24,12 +26,12 @@ const Sidebar = ({ activeView, setActiveView, setPlaylist, setPlaylistMeta }) =>
     { label: "Focus Mode", query: "focus classical" }
   ];
 
-  const fetchStaticPlaylist = async (pl) => {
-    setActiveView(pl.label);
+  const fetchStaticPlaylist = async (playlistItem) => {
+    setActiveView(playlistItem.label);
     try {
-      const res = await axios.get(`https://itunes.apple.com/search?term=${encodeURIComponent(pl.query)}&entity=song&limit=20`);
-      const validSongs = res.data.results.filter(s => s.previewUrl);
-      setPlaylistMeta({ title: pl.label, description: "Curated for you", totalSongs: validSongs.length });
+      const res = await axios.get(`https://itunes.apple.com/search?term=${encodeURIComponent(playlistItem.query)}&entity=song&limit=20`);
+      const validSongs = res.data.results.filter((song) => song.previewUrl);
+      setPlaylistMeta({ title: playlistItem.label, description: 'Curated for you', totalSongs: validSongs.length });
       setPlaylist(validSongs);
     } catch (err) {
       console.error(err);

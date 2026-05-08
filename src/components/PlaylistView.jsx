@@ -4,14 +4,17 @@ import { Play, Shuffle, Heart, Download, Clock, MoreHorizontal, Search } from 'l
 import axios from 'axios';
 
 const PlaylistView = ({ activeView, playlistMeta, songs, setPlaylist, setPlaylistMeta, currentlyPlaying, setCurrentlyPlaying, setIsPlaying, currentEmotion, likedSongs, toggleLiked, recentMoods }) => {
+  // Local state for Discover search input.
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
 
+  // Plays a selected song and informs parent player state.
   const handlePlaySong = (song) => {
     setCurrentlyPlaying(song);
     setIsPlaying(true);
   };
 
+  // Search iTunes and replace current playlist with results.
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
@@ -27,11 +30,18 @@ const PlaylistView = ({ activeView, playlistMeta, songs, setPlaylist, setPlaylis
     setIsSearching(false);
   };
 
-  const bannerColor = currentEmotion === 'happy' ? 'from-pink-500/40' :
-                      currentEmotion === 'sad' ? 'from-blue-500/40' :
-                      currentEmotion === 'angry' ? 'from-red-500/40' :
-                      currentEmotion === 'calm' ? 'from-teal-500/40' : 'from-gray-500/40';
+  // Banner gradient follows detected mood for visual continuity.
+  const bannerColor = currentEmotion === 'happy'
+    ? 'from-pink-500/40'
+    : currentEmotion === 'sad'
+      ? 'from-blue-500/40'
+      : currentEmotion === 'angry'
+        ? 'from-red-500/40'
+        : currentEmotion === 'calm'
+          ? 'from-teal-500/40'
+          : 'from-gray-500/40';
 
+  // Dedicated view to show mood history cards.
   if (activeView === 'Recent Moods') {
     return (
       <div className="flex-1 h-full overflow-y-auto custom-scroll relative bg-gradient-to-b from-[#121212] to-[#050505] p-8">

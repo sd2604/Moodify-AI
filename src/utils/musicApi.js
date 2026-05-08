@@ -54,8 +54,10 @@ const moodConfigs = {
 };
 
 /**
- * Fetches multiple diverse genres from iTunes API and interleaves them.
- * @param {string} emotion 
+ * Fetch songs for one emotion using multiple curated queries.
+ * Why: one query often gives repetitive songs, so we mix several streams.
+ * How: fetch all queries in parallel, then interleave and deduplicate by trackId.
+ * @param {string} emotion
  * @returns {Promise<{ playlistMeta: Object, songs: Array }>}
  */
 export const fetchDynamicPlaylist = async (emotion) => {
@@ -64,7 +66,7 @@ export const fetchDynamicPlaylist = async (emotion) => {
   
   try {
     const fetchPromises = config.queries.map(async (query) => {
-      // Add random offset for freshness
+      // Random offset helps prevent showing the exact same list every time.
       const offset = Math.floor(Math.random() * 20);
       const url = `https://itunes.apple.com/search?term=${encodeURIComponent(query.term)}&entity=song&limit=${limitPerQuery}&offset=${offset}`;
       const res = await axios.get(url);
@@ -73,21 +75,21 @@ export const fetchDynamicPlaylist = async (emotion) => {
         .filter(s => s.previewUrl)
         .map(s => ({
           ...s,
-          customLanguage: query.lang, // Inject our curated language mapping
+          customLanguage: query.lang,
           customGenre: query.term
         }));
     });
 
     const resultsArray = await Promise.all(fetchPromises);
     
-    // Interleave the results (e.g., [Pop1, Hindi1, Punjabi1, Pop2, Hindi2...])
+    // Interleave results (Pop1, Hindi1, Punjabi1, Pop2, ...).
     const playlist = [];
     const maxLength = Math.max(...resultsArray.map(arr => arr.length));
     
     for (let i = 0; i < maxLength; i++) {
       for (const arr of resultsArray) {
         if (arr[i]) {
-          // ensure no duplicate track IDs
+          // Ensure duplicates are removed across all query result sets.
           if (!playlist.find(s => s.trackId === arr[i].trackId)) {
             playlist.push(arr[i]);
           }

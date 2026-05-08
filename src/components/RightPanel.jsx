@@ -7,12 +7,12 @@ const RightPanel = ({ currentlyPlaying, currentEmotion, setCurrentEmotion }) => 
   return (
     <div className="w-80 h-full bg-[#030303]/90 border-l border-white/5 flex flex-col z-20">
       
-      {/* Top: AI Camera Scanner */}
+      {/* Top section: camera scanner for mood detection. */}
       <div className="h-64 p-4 border-b border-white/5 shrink-0">
         <CameraFeed currentEmotion={currentEmotion} setCurrentEmotion={setCurrentEmotion} />
       </div>
 
-      {/* Bottom: Now Playing & Lyrics */}
+      {/* Bottom section: now playing card and live lyrics. */}
       <div className="flex-1 overflow-y-auto custom-scroll p-6 flex flex-col relative">
         <AnimatePresence mode="wait">
           {currentlyPlaying ? (
