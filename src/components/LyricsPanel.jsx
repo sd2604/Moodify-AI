@@ -9,7 +9,6 @@ const formatTime = (seconds) => {
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 };
 
-// iTunes titles often include feat/remix text. Removing it improves lyric API matches.
 const sanitizeSongTitle = (title) =>
   title
     .replace(/\(.*?\)|\[.*?\]/g, '')
@@ -18,7 +17,7 @@ const sanitizeSongTitle = (title) =>
     .trim();
 
 const LyricsPanel = ({ currentlyPlaying, setCurrentlyPlaying, songs, isPlaying, setIsPlaying }) => {
-  // Lyrics and player UI state for the left panel.
+
   const [lyrics, setLyrics] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -29,7 +28,6 @@ const LyricsPanel = ({ currentlyPlaying, setCurrentlyPlaying, songs, isPlaying, 
   const [audioEl, setAudioEl] = useState(null);
 
   useEffect(() => {
-    // Fetch lyrics whenever the active song changes.
     const fetchLyrics = async () => {
       if (!currentlyPlaying) {
         setLyrics('');
@@ -61,13 +59,11 @@ const LyricsPanel = ({ currentlyPlaying, setCurrentlyPlaying, songs, isPlaying, 
   }, [currentlyPlaying]);
 
   useEffect(() => {
-    // Keep audio element volume synced with slider.
     if (!audioEl) return;
     audioEl.volume = volume;
   }, [audioEl, volume]);
 
   useEffect(() => {
-    // Centralized play/pause control from parent state.
     if (!audioEl) return;
     if (isPlaying && currentlyPlaying?.previewUrl) {
       audioEl.play().catch(() => {});
@@ -77,7 +73,6 @@ const LyricsPanel = ({ currentlyPlaying, setCurrentlyPlaying, songs, isPlaying, 
   }, [audioEl, isPlaying, currentlyPlaying]);
 
   useEffect(() => {
-    // Highlight current lyric line based on track progress.
     if (!lyrics || !duration) {
       setActiveLineIndex(0);
       return;
@@ -89,7 +84,6 @@ const LyricsPanel = ({ currentlyPlaying, setCurrentlyPlaying, songs, isPlaying, 
   }, [lyrics, currentTime, duration]);
 
   useEffect(() => {
-    // Auto-scroll so active lyric line stays visible.
     const activeLine = document.getElementById(`lyrics-line-${activeLineIndex}`);
     if (activeLine) {
       activeLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -97,7 +91,6 @@ const LyricsPanel = ({ currentlyPlaying, setCurrentlyPlaying, songs, isPlaying, 
   }, [activeLineIndex]);
 
   const handleSeek = (e) => {
-    // Convert slider value (0-100) back into seconds.
     const seekValue = Number(e.target.value);
     if (!audioEl || !duration) return;
     const seekTime = (seekValue / 100) * duration;
@@ -115,7 +108,6 @@ const LyricsPanel = ({ currentlyPlaying, setCurrentlyPlaying, songs, isPlaying, 
   };
 
   const handleNext = () => {
-    // Move to next song in circular order.
     if (!songs?.length || !currentlyPlaying) return;
     const currentIndex = songs.findIndex((song) => song.trackId === currentlyPlaying.trackId);
     const nextIndex = (currentIndex + 1) % songs.length;

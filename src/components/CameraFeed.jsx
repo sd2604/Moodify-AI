@@ -34,7 +34,7 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
   }, [isModelsLoaded]);
 
   useEffect(() => {
-    // Cleanup to prevent duplicate intervals and camera stream leaks.
+
     return () => {
       if (detectionIntervalRef.current) {
         clearInterval(detectionIntervalRef.current);
@@ -46,7 +46,7 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
     };
   }, []);
 
-  // Starts webcam stream after model load.
+
   const startVideo = () => {
     navigator.mediaDevices.getUserMedia({ video: true })
       .then((stream) => {
@@ -57,14 +57,14 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
       .catch((err) => console.error("Error accessing webcam", err));
   };
 
-  // Converts less useful labels into app-supported moods.
+
   const normalizeEmotion = (emotion) => {
     if (emotion === 'surprised') return 'happy';
     if (emotion === 'fear' || emotion === 'disgust') return 'angry';
     return emotion;
   };
 
-  // Runs every 500ms while video is playing and updates mood safely.
+
   const handleVideoPlay = () => {
     if (detectionIntervalRef.current) {
       clearInterval(detectionIntervalRef.current);
@@ -111,7 +111,6 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
     }, 500);
   };
 
-  // Manual fallback moods are useful when face is not detected.
   const manualMoods = [
     { name: 'happy', icon: <Smile className="w-5 h-5" /> },
     { name: 'sad', icon: <Frown className="w-5 h-5" /> },
@@ -133,7 +132,6 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
 
       <div className="relative aspect-video rounded-2xl overflow-hidden bg-black/45 border border-white/10 backdrop-blur-md flex items-center justify-center p-4 md:p-6">
         <div className="relative w-full max-w-[620px] aspect-[860/599]">
-          {/* Live feed embedded inside transparent screen region */}
           <div className="absolute left-[15.2%] top-[40.3%] w-[52.2%] h-[48.8%] rounded-[8%] overflow-hidden shadow-[0_0_20px_rgba(34,211,238,0.15)]">
             {!isModelsLoaded ? (
               <div className="w-full h-full bg-black/40 flex flex-col items-center justify-center animate-pulse">
@@ -158,15 +156,12 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
               transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
             />
           </div>
-
-          {/* Camera frame image overlay */}
           <img
             src={cameraFrame}
             alt="AI scanner camera frame"
             className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none drop-shadow-[0_18px_30px_rgba(0,0,0,0.45)]"
           />
 
-          {/* subtle lens glass reflection */}
           <div className="absolute left-[23%] top-[44%] w-[20%] h-[10%] rounded-full bg-white/20 blur-sm opacity-40 pointer-events-none" />
           <div className="absolute left-[16%] top-[40.3%] w-[50%] h-[48.8%] rounded-[8%] border border-cyan-300/15 pointer-events-none shadow-[0_0_18px_rgba(103,232,249,0.2),0_0_14px_rgba(196,181,253,0.16)]" />
         </div>

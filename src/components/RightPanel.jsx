@@ -7,12 +7,10 @@ const RightPanel = ({ currentlyPlaying, currentEmotion, setCurrentEmotion }) => 
   return (
     <div className="w-80 h-full bg-[#030303]/90 border-l border-white/5 flex flex-col z-20">
       
-      {/* Top section: camera scanner for mood detection. */}
       <div className="h-64 p-4 border-b border-white/5 shrink-0">
         <CameraFeed currentEmotion={currentEmotion} setCurrentEmotion={setCurrentEmotion} />
       </div>
 
-      {/* Bottom section: now playing card and live lyrics. */}
       <div className="flex-1 overflow-y-auto custom-scroll p-6 flex flex-col relative">
         <AnimatePresence mode="wait">
           {currentlyPlaying ? (
@@ -23,7 +21,7 @@ const RightPanel = ({ currentlyPlaying, currentEmotion, setCurrentEmotion }) => 
               exit={{ opacity: 0 }}
               className="flex flex-col h-full"
             >
-              {/* Large Poster */}
+
               <div className="w-full aspect-square rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden mb-6 relative group">
                 <img 
                   src={currentlyPlaying.artworkUrl100.replace('100x100', '600x600')} 
@@ -32,7 +30,6 @@ const RightPanel = ({ currentlyPlaying, currentEmotion, setCurrentEmotion }) => 
                 />
               </div>
 
-              {/* Song Meta */}
               <div className="mb-6">
                 <h2 className="font-inter font-bold text-2xl text-white mb-1 hover:underline cursor-pointer break-words">
                   {currentlyPlaying.trackName}
@@ -45,7 +42,6 @@ const RightPanel = ({ currentlyPlaying, currentEmotion, setCurrentEmotion }) => 
                 </div>
               </div>
 
-              {/* Live Lyrics Panel */}
               <div className="flex-1 bg-white/5 rounded-xl relative overflow-hidden group border border-white/5 flex flex-col">
                 <LiveLyricsPanel currentlyPlaying={currentlyPlaying} />
               </div>

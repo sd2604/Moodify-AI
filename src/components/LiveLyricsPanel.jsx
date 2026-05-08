@@ -3,21 +3,21 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const LiveLyricsPanel = ({ currentlyPlaying }) => {
-  // State for fetched lyrics and active scrolling line.
+
   const [lyrics, setLyrics] = useState('');
   const [loading, setLoading] = useState(false);
   const [activeLineIdx, setActiveLineIdx] = useState(0);
   const containerRef = useRef(null);
 
   useEffect(() => {
-    // Fetch lyrics whenever active song changes.
+   
     const fetchLyrics = async () => {
       if (!currentlyPlaying) return;
       
       setLoading(true);
       setLyrics('');
       try {
-        // Clean up title for better search results (remove " (feat. XYZ)", remaster, etc)
+
         const rawTitle = currentlyPlaying.trackName;
         const rawArtist = currentlyPlaying.artistName;
         
@@ -43,7 +43,7 @@ const LiveLyricsPanel = ({ currentlyPlaying }) => {
 
   const lyricsLines = lyrics ? lyrics.split('\n').filter(line => line.trim() !== '') : [];
 
-  // Simulated lyric sync for 30-second preview audio.
+
   useEffect(() => {
     if (!lyricsLines.length) return;
     setActiveLineIdx(0);
@@ -56,7 +56,7 @@ const LiveLyricsPanel = ({ currentlyPlaying }) => {
         }
         return next;
       });
-    }, 2500); // Advance active line every 2.5s for the 30s preview
+    }, 2500); 
     
     return () => clearInterval(interval);
   }, [lyrics, lyricsLines.length]);
@@ -77,7 +77,7 @@ const LiveLyricsPanel = ({ currentlyPlaying }) => {
         <h3 className="font-bebas text-lg flex items-center gap-2 text-white tracking-widest">
           🎵 LIVE LYRICS
           
-          {/* Animated Equalizer */}
+   
           <div className="flex gap-[3px] ml-3 h-5 items-end">
             {[...Array(4)].map((_, i) => (
               <motion.div
@@ -118,9 +118,8 @@ const LiveLyricsPanel = ({ currentlyPlaying }) => {
           >
             {currentlyPlaying ? (
               <>
-                {/* Lyrics Scroller */}
                 <div className="relative flex-1 overflow-hidden">
-                  {/* Top Fade */}
+
                   <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-[#050505]/90 to-transparent z-10 pointer-events-none rounded-t-lg" />
                   
                   {lyricsLines.length > 0 ? (
@@ -146,7 +145,6 @@ const LiveLyricsPanel = ({ currentlyPlaying }) => {
                     </div>
                   )}
                   
-                  {/* Bottom Fade */}
                   <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#050505]/90 to-transparent z-10 pointer-events-none rounded-b-lg" />
                 </div>
               </>

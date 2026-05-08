@@ -4,17 +4,17 @@ import { Play, Shuffle, Heart, Download, Clock, MoreHorizontal, Search } from 'l
 import axios from 'axios';
 
 const PlaylistView = ({ activeView, playlistMeta, songs, setPlaylist, setPlaylistMeta, currentlyPlaying, setCurrentlyPlaying, setIsPlaying, currentEmotion, likedSongs, toggleLiked, recentMoods }) => {
-  // Local state for Discover search input.
+
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
 
-  // Plays a selected song and informs parent player state.
+
   const handlePlaySong = (song) => {
     setCurrentlyPlaying(song);
     setIsPlaying(true);
   };
 
-  // Search iTunes and replace current playlist with results.
+
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
@@ -30,7 +30,7 @@ const PlaylistView = ({ activeView, playlistMeta, songs, setPlaylist, setPlaylis
     setIsSearching(false);
   };
 
-  // Banner gradient follows detected mood for visual continuity.
+
   const bannerColor = currentEmotion === 'happy'
     ? 'from-pink-500/40'
     : currentEmotion === 'sad'
@@ -41,7 +41,7 @@ const PlaylistView = ({ activeView, playlistMeta, songs, setPlaylist, setPlaylis
           ? 'from-teal-500/40'
           : 'from-gray-500/40';
 
-  // Dedicated view to show mood history cards.
+
   if (activeView === 'Recent Moods') {
     return (
       <div className="flex-1 h-full overflow-y-auto custom-scroll relative bg-gradient-to-b from-[#121212] to-[#050505] p-8">
@@ -87,7 +87,7 @@ const PlaylistView = ({ activeView, playlistMeta, songs, setPlaylist, setPlaylis
           </div>
         )}
 
-        {/* Cover Collage */}
+    
         <div className="w-48 h-48 md:w-56 md:h-56 shadow-2xl grid grid-cols-2 grid-rows-2 rounded-md overflow-hidden bg-[#282828] shrink-0">
           {songs.length >= 4 ? songs.slice(0, 4).map((song, i) => (
             <img key={i} src={song.artworkUrl100} alt="cover" className="w-full h-full object-cover" />
@@ -115,7 +115,7 @@ const PlaylistView = ({ activeView, playlistMeta, songs, setPlaylist, setPlaylis
         </div>
       </div>
 
-      {/* Controls */}
+    
       <div className="px-8 py-6 flex items-center gap-6">
         <button 
           onClick={() => songs.length && handlePlaySong(songs[0])}
@@ -128,7 +128,7 @@ const PlaylistView = ({ activeView, playlistMeta, songs, setPlaylist, setPlaylis
         </button>
       </div>
 
-      {/* Song Table */}
+  
       <div className="px-8 pb-32">
         <div className="grid grid-cols-[16px_minmax(200px,_1fr)_minmax(150px,_200px)_minmax(100px,_150px)_50px_50px] gap-4 px-4 py-2 border-b border-white/10 text-white/50 font-space text-xs uppercase tracking-wider mb-4">
           <div className="text-center">#</div>

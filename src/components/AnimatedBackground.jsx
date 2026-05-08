@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-// Central color config keeps emotion visuals easy to understand and edit.
 const emotionVisuals = {
   happy: {
     gradient: 'radial-gradient(circle at 50% 50%, rgba(255, 0, 128, 0.15), rgba(0, 0, 0, 1))',
@@ -35,7 +34,6 @@ const AnimatedBackground = ({ currentEmotion }) => {
 
   return (
     <div className="fixed inset-0 z-[-1] overflow-hidden bg-[#050505]">
-      {/* Base mood gradient creates overall tone for the page. */}
       <motion.div
         className="absolute inset-0 transition-all duration-1000 ease-in-out"
         style={{ background: selectedEmotionVisual.gradient }}
@@ -44,7 +42,6 @@ const AnimatedBackground = ({ currentEmotion }) => {
         transition={{ duration: 1 }}
       />
       
-      {/* Two moving blurred blobs add soft motion depth. */}
       <motion.div
         className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full mix-blend-screen filter blur-[100px] opacity-20"
         style={{ backgroundColor: selectedEmotionVisual.blob1 }}
@@ -73,8 +70,6 @@ const AnimatedBackground = ({ currentEmotion }) => {
           ease: "linear"
         }}
       />
-      
-      {/* Noise Overlay */}
       <div className="noise-overlay" />
       
       {/* Floating Particles */}
@@ -102,7 +97,6 @@ const AnimatedBackground = ({ currentEmotion }) => {
         ))}
       </div>
       
-      {/* Animated Mesh Glow overlay */}
       <motion.div 
         className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-20"
         style={{

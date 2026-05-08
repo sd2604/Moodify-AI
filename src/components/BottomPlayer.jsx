@@ -9,7 +9,6 @@ const BottomPlayer = ({ currentlyPlaying, isPlaying, togglePlay, progress, volum
   return (
     <div className="fixed bottom-0 left-0 right-0 h-24 bg-[#050505]/95 border-t border-white/10 z-50 flex items-center justify-between px-4 md:px-8 backdrop-blur-xl">
       
-      {/* Left: Thumbnail & Info */}
       <div className="w-1/3 flex items-center gap-4">
         {currentlyPlaying ? (
           <>
@@ -44,7 +43,6 @@ const BottomPlayer = ({ currentlyPlaying, isPlaying, togglePlay, progress, volum
         )}
       </div>
 
-      {/* Center section: transport controls and seek bar */}
       <div className="w-1/3 flex flex-col items-center justify-center gap-2">
         <div className="flex items-center gap-6">
           <button 
@@ -68,7 +66,6 @@ const BottomPlayer = ({ currentlyPlaying, isPlaying, togglePlay, progress, volum
           </button>
         </div>
         
-        {/* Progress Bar */}
         <div className="w-full max-w-md flex items-center gap-2 group cursor-pointer">
           <span className="text-[10px] text-white/50 font-space w-8 text-right">
              {audioRef.current ? Math.floor(audioRef.current.currentTime) : '0'}:{(audioRef.current ? Math.floor((audioRef.current.currentTime % 1) * 60) : 0).toString().padStart(2, '0')}
@@ -88,7 +85,6 @@ const BottomPlayer = ({ currentlyPlaying, isPlaying, togglePlay, progress, volum
         </div>
       </div>
 
-      {/* Right section: extra actions and volume control */}
       <div className="w-1/3 flex items-center justify-end gap-4 pr-2">
         <button className="text-white/50 hover:text-white transition-colors">
           <Mic2 className="w-4 h-4" />
@@ -113,7 +109,6 @@ const BottomPlayer = ({ currentlyPlaying, isPlaying, togglePlay, progress, volum
         </div>
       </div>
 
-      {/* Hidden Audio Element */}
       {currentlyPlaying && (
         <audio 
           ref={audioRef} 

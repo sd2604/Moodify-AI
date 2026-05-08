@@ -20,7 +20,6 @@ const RecommendedSongs = ({ currentEmotion, songs, loading, currentlyPlaying, on
       </div>
 
       {currentlyPlaying && (
-        // Shows quick "now playing" context inside recommendation panel.
         <div className="mb-4 p-3 rounded-xl border border-white/10 bg-black/20 flex items-center justify-between gap-3">
           <div className="min-w-0">
             <p className="font-space text-sm font-semibold truncate">{currentlyPlaying.trackName}</p>
@@ -37,7 +36,6 @@ const RecommendedSongs = ({ currentEmotion, songs, loading, currentlyPlaying, on
             const isActive = song.trackId === currentlyPlaying?.trackId;
 
             return (
-            // Each row is clickable and promotes selected song visually.
             <button
               key={song.trackId}
               onClick={() => onSelectSong(song)}
