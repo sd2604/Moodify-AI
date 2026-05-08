@@ -95,7 +95,7 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
 
   return (
     <motion.div 
-      className={`glass-panel p-6 rounded-3xl h-full relative overflow-hidden neon-border-${currentEmotion || 'neutral'} transition-all duration-500 hover:rotate-1 hover:scale-[1.01] hover:shadow-[0_0_40px_rgba(255,255,255,0.1)]`}
+      className={`glass-panel p-6 rounded-3xl h-full relative overflow-hidden neon-border-${currentEmotion || 'neutral'} transition-all duration-500`}
       initial={{ opacity: 0, x: -50 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
@@ -104,7 +104,7 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
         <Camera className="w-6 h-6 text-white/70" /> AI SCANNER
       </h2>
 
-      <div className="relative aspect-video rounded-2xl overflow-hidden bg-black/50 border border-white/10 flex items-center justify-center">
+      <div className="relative aspect-video rounded-2xl overflow-hidden bg-black/45 border border-white/10 backdrop-blur-md flex items-center justify-center p-4 md:p-6">
         {!isModelsLoaded ? (
           <div className="flex flex-col items-center animate-pulse">
             <div className="w-8 h-8 border-2 border-white/50 border-t-white rounded-full animate-spin mb-2" />
@@ -112,43 +112,36 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
           </div>
         ) : (
           <>
-            <video 
-              ref={videoRef}
-              autoPlay 
-              muted 
-              onPlay={handleVideoPlay}
-              className="w-full h-full object-cover opacity-80"
-            />
-            {/* HUD Overlay & Crosshairs */}
-            <div className="absolute inset-0 pointer-events-none z-20 flex items-center justify-center mix-blend-screen opacity-30">
-               <div className="w-full h-[1px] bg-white/20 absolute" />
-               <div className="h-full w-[1px] bg-white/20 absolute" />
-               <div className="w-16 h-16 border border-white/30 rounded-full flex items-center justify-center">
-                  <div className="w-1 h-1 bg-white/50 rounded-full" />
-               </div>
-            </div>
+            <div className="relative w-full max-w-[560px] aspect-[4/3] rounded-2xl overflow-hidden bg-black/50 border border-white/15 shadow-[0_0_30px_rgba(56,189,248,0.12)]">
+              <video 
+                ref={videoRef}
+                autoPlay 
+                muted 
+                onPlay={handleVideoPlay}
+                className="w-full h-full object-cover opacity-85"
+              />
 
-            {/* Scanning Line */}
-            <div className="absolute top-0 left-0 w-full h-[2px] bg-white/50 shadow-[0_0_20px_rgba(255,255,255,1)] animate-scanline z-30 opacity-50" />
+              {/* Transparent futuristic frame */}
+              <div className="absolute inset-0 pointer-events-none z-20">
+                <div className="absolute inset-0 rounded-2xl border border-white/10" />
+                <div className="absolute inset-x-[14%] inset-y-[12%] rounded-xl border border-white/15" />
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-30" />
 
-            {/* AI Scanner Corners */}
-            <div className="absolute inset-0 pointer-events-none m-6 z-20">
-               <motion.div 
-                 className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-white/60 shadow-[-5px_-5px_15px_rgba(255,255,255,0.3)]" 
-                 animate={{ opacity: faceDetected ? [1, 0.5, 1] : 0.3 }} transition={{ repeat: Infinity, duration: 1 }} 
-               />
-               <motion.div 
-                 className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-white/60 shadow-[5px_-5px_15px_rgba(255,255,255,0.3)]" 
-                 animate={{ opacity: faceDetected ? [1, 0.5, 1] : 0.3 }} transition={{ repeat: Infinity, duration: 1.2 }} 
-               />
-               <motion.div 
-                 className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-white/60 shadow-[-5px_5px_15px_rgba(255,255,255,0.3)]" 
-                 animate={{ opacity: faceDetected ? [1, 0.5, 1] : 0.3 }} transition={{ repeat: Infinity, duration: 1.1 }} 
-               />
-               <motion.div 
-                 className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-white/60 shadow-[5px_5px_15px_rgba(255,255,255,0.3)]" 
-                 animate={{ opacity: faceDetected ? [1, 0.5, 1] : 0.3 }} transition={{ repeat: Infinity, duration: 1.3 }} 
-               />
+                <div className="absolute top-0 left-0 w-10 h-10 rounded-tl-2xl border-t-2 border-l-2 border-cyan-300/70 shadow-[0_0_14px_rgba(103,232,249,0.45)]" />
+                <div className="absolute top-0 right-0 w-10 h-10 rounded-tr-2xl border-t-2 border-r-2 border-violet-300/70 shadow-[0_0_14px_rgba(196,181,253,0.45)]" />
+                <div className="absolute bottom-0 left-0 w-10 h-10 rounded-bl-2xl border-b-2 border-l-2 border-violet-300/70 shadow-[0_0_14px_rgba(196,181,253,0.45)]" />
+                <div className="absolute bottom-0 right-0 w-10 h-10 rounded-br-2xl border-b-2 border-r-2 border-cyan-300/70 shadow-[0_0_14px_rgba(103,232,249,0.45)]" />
+
+                <div className="absolute inset-x-[10%] top-1/2 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+                <div className="absolute inset-y-[10%] left-1/2 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent" />
+
+                <motion.div
+                  className="absolute left-[8%] right-[8%] h-[1.5px] bg-gradient-to-r from-transparent via-cyan-200/70 to-transparent"
+                  animate={{ y: ['18%', '82%', '18%'], opacity: [0.25, 0.55, 0.25] }}
+                  transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut' }}
+                />
+                <div className="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-cyan-200/10 to-transparent" />
+              </div>
             </div>
             {faceDetected && (
               <motion.div 
@@ -186,15 +179,15 @@ const CameraFeed = ({ currentEmotion, setCurrentEmotion }) => {
       <div className="mt-6 flex flex-col items-center justify-center">
         {faceDetected ? (
           <motion.div 
-            className="flex flex-col items-center"
+            className="flex flex-col items-center gap-2"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             key={currentEmotion}
           >
-            <div className={`px-6 py-2 rounded-full glass-panel border font-space uppercase tracking-widest text-lg font-bold text-gradient-${currentEmotion}`}>
+            <div className={`px-5 py-1.5 rounded-full border border-white/20 bg-black/35 backdrop-blur-sm font-space uppercase tracking-wider text-sm font-bold text-gradient-${currentEmotion} shadow-[0_0_14px_rgba(103,232,249,0.2)]`}>
               {currentEmotion}
             </div>
-            <div className="text-sm font-space text-white/50 mt-2">
+            <div className="text-xs font-space text-white/60">
               Confidence: {confidence}%
             </div>
           </motion.div>
