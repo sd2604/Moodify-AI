@@ -1,27 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import LoadingScreen from './components/LoadingScreen';
 import AnimatedBackground from './components/AnimatedBackground';
 import CameraFeed from './components/CameraFeed';
 import MusicPlayer from './components/MusicPlayer';
-import MoodChart from './components/MoodChart';
-import SuggestionCard from './components/SuggestionCard';
 import LyricsPanel from './components/LyricsPanel';
 
 function App() {
   const [loading, setLoading] = useState(true);
   const [currentEmotion, setCurrentEmotion] = useState('neutral');
-  const [moodHistory, setMoodHistory] = useState([]);
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
-
-  useEffect(() => {
-    // Add to mood history when emotion changes (limit to last 10)
-    setMoodHistory(prev => {
-      const newHistory = [...prev, { time: new Date().toLocaleTimeString(), emotion: currentEmotion }];
-      if (newHistory.length > 10) return newHistory.slice(newHistory.length - 10);
-      return newHistory;
-    });
-  }, [currentEmotion]);
 
   return (
     <div className="min-h-screen relative overflow-hidden font-inter text-white">
@@ -41,26 +29,20 @@ function App() {
             transition={{ duration: 1, delay: 0.5 }}
           >
             {/* Left Panel: Emotion Detection */}
-            <div className="w-full md:w-1/4 h-full flex flex-col gap-6">
+            <div className="w-full md:w-1/3 lg:w-1/4 h-full flex flex-col gap-6">
               <CameraFeed 
                 currentEmotion={currentEmotion} 
                 setCurrentEmotion={setCurrentEmotion} 
               />
             </div>
 
-            {/* Center Panel: Music Player */}
-            <div className="w-full md:w-2/4 h-full flex flex-col gap-6">
+            {/* Center Panel: Music Player & Lyrics */}
+            <div className="w-full md:w-2/3 lg:w-3/4 h-full flex flex-col gap-6 overflow-y-auto pb-8">
               <MusicPlayer 
                 currentEmotion={currentEmotion}
                 currentlyPlaying={currentlyPlaying}
                 setCurrentlyPlaying={setCurrentlyPlaying}
               />
-            </div>
-
-            {/* Right Panel: Analytics & Suggestions */}
-            <div className="w-full md:w-1/4 h-full flex flex-col gap-6 overflow-y-auto pb-8">
-              <MoodChart moodHistory={moodHistory} />
-              <SuggestionCard currentEmotion={currentEmotion} />
               <LyricsPanel currentlyPlaying={currentlyPlaying} />
             </div>
           </motion.div>
